@@ -23,10 +23,39 @@
             margin: 0;
             padding: 0;
             overflow-x: hidden;
-            scroll-behavior: smooth;
         }
 
         .serif { font-family: 'Noto Serif TC', serif; }
+
+        /* 基礎動畫設定 */
+        .fade-exit {
+            opacity: 0;
+            transform: translateX(-20px);
+            transition: all 0.4s ease-in;
+        }
+
+        .fade-enter {
+            opacity: 0;
+            transform: translateX(20px);
+        }
+
+        .fade-enter-active {
+            opacity: 1;
+            transform: translateX(0);
+            transition: all 0.5s ease-out;
+        }
+
+        /* 由下往上滑動動畫 */
+        .slide-up-enter {
+            opacity: 0;
+            transform: translateY(40px);
+        }
+
+        .slide-up-active {
+            opacity: 1;
+            transform: translateY(0);
+            transition: all 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+        }
 
         /* 品牌標識 */
         .brand-logo {
@@ -36,17 +65,6 @@
         }
         .brand-logo .main { font-size: 18px; font-weight: 500; display: block; margin-bottom: 4px; }
         .brand-logo .sub { font-size: 10px; font-weight: 300; display: block; color: var(--honi-clay); }
-
-        /* 動畫效果 */
-        .reveal {
-            opacity: 0;
-            transform: translateY(20px);
-            transition: all 1s ease-out;
-        }
-        .reveal.active {
-            opacity: 1;
-            transform: translateY(0);
-        }
 
         .option-card {
             background: white;
@@ -69,8 +87,8 @@
         .progress-fill {
             height: 100%;
             background: var(--honi-clay);
-            width: 20%;
-            transition: width 0.4s ease;
+            width: 0%;
+            transition: width 0.6s cubic-bezier(0.65, 0, 0.35, 1);
         }
 
         /* 彈窗樣式 */
@@ -80,6 +98,7 @@
             display: none;
             opacity: 0;
             transition: opacity 0.3s ease;
+            z-index: 60;
         }
         .modal-overlay.active {
             display: flex;
@@ -109,24 +128,29 @@
         }
         .cta-btn:hover {
             background: var(--honi-brown);
-            transform: scale(1.02);
+        }
+
+        .view-section {
+            display: none;
+        }
+        .view-section.active {
+            display: block;
         }
     </style>
 </head>
 <body>
 
-    <!-- 品牌 Header -->
     <div class="brand-logo serif">
         <span class="main">HoNni</span>
         <span class="sub">開運飾品</span>
     </div>
 
-    <main class="max-w-xl mx-auto px-6">
+    <main class="max-w-xl mx-auto px-6 overflow-hidden min-h-[70vh]">
         
         <!-- 主題導入 -->
-        <section id="intro" class="reveal active py-12 text-center">
+        <section id="intro" class="view-section active py-12 text-center slide-up-active">
             <h1 class="serif text-2xl tracking-[0.2em] leading-relaxed mb-6">
-                【2026年來測出<br>最適合你的開運能量】
+                來測出<br>現階段最適合你的開運能量
             </h1>
             <p class="text-sm font-light text-stone-500 leading-loose mb-10">
                 時光的齒輪緩緩轉動，在步入新的一年之前，<br>
@@ -137,19 +161,18 @@
         </section>
 
         <!-- 測驗內容 -->
-        <section id="quiz" class="hidden py-8">
+        <section id="quiz" class="view-section py-8">
             <div class="progress-bar">
                 <div id="progress-fill" class="progress-fill"></div>
             </div>
-            <div id="question-container" class="reveal active">
-                <h2 id="question-text" class="serif text-lg mb-8 text-center tracking-wide"></h2>
-                <div id="options-container" class="space-y-4"></div>
+            <div id="question-wrapper">
+                <!-- 題目會在這裡動態切換 -->
             </div>
         </section>
 
         <!-- 測驗結果 -->
-        <section id="result" class="hidden py-12">
-            <div class="reveal active">
+        <section id="result" class="view-section py-12">
+            <div id="result-content" class="slide-up-enter">
                 <div class="text-center mb-10">
                     <span class="text-[10px] tracking-[0.3em] text-stone-400">YOUR ENERGY TYPE</span>
                     <h2 id="res-title" class="serif text-2xl mt-2 tracking-[0.1em]"></h2>
@@ -173,10 +196,10 @@
                 <div class="text-center space-y-6">
                     <p class="text-[11px] text-stone-400 tracking-widest">點擊下方按鈕，與我們分享妳的能量洞察</p>
                     <button onclick="triggerCTA()" class="w-full cta-btn py-5 text-xs font-medium uppercase">
-                        將測驗結果傳給 HoNni
+                        點我將測驗結果截圖傳給 HoNni
                     </button>
                     <a id="res-link" href="#" target="_blank" class="block text-xs text-stone-400 hover:text-stone-600 tracking-widest transition-colors">
-                        [ 探索推薦款式：<span id="res-recommend"></span> ]
+                        [ 點我看官網推薦款式：<span id="res-recommend"></span> ]
                     </a>
                 </div>
             </div>
@@ -184,11 +207,11 @@
     </main>
 
     <!-- 彈窗 Modal -->
-    <div id="modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center p-6">
+    <div id="modal" class="modal-overlay fixed inset-0 items-center justify-center p-6">
         <div class="bg-white w-full max-w-xs p-10 text-center shadow-xl">
             <h3 id="modal-title" class="serif text-base mb-4 tracking-widest"></h3>
             <p id="modal-content" class="text-xs font-light leading-relaxed text-stone-500 mb-8"></p>
-            <button onclick="closeModal()" class="text-[10px] tracking-[0.2em] text-stone-400 border-b border-stone-200 pb-1">CLOSE</button>
+            <button onclick="closeModal()" class="text-[10px] tracking-[0.2em] text-stone-400 border-b border-stone-200 pb-1 uppercase">Close</button>
         </div>
     </div>
 
@@ -196,7 +219,7 @@
     <div id="conclusion-layer">
         <span class="serif text-[10px] tracking-[0.4em] opacity-50 mb-6 uppercase">Energy Insight</span>
         <h2 id="final-insight" class="serif text-xl leading-relaxed tracking-widest mb-12">我來告訴你最需要的能量</h2>
-        <button onclick="hideConclusion()" class="text-[10px] tracking-[0.2em] border border-white/20 px-8 py-3 hover:bg-white hover:text-stone-800 transition-all">關閉</button>
+        <button onclick="hideConclusion()" class="text-[10px] tracking-[0.2em] border border-white/20 px-8 py-3 hover:bg-white hover:text-stone-800 transition-all uppercase">關閉</button>
     </div>
 
     <script>
@@ -211,10 +234,10 @@
                 ]
             },
             {
-                q: "以下哪一種氛圍，最能讓妳感到「充能」？",
+                 q: "以下哪一種氛圍，最能讓妳感到「充滿能量」？",
                 options: [
-                    { t: "清晨陽光灑在工作桌上的幹練感", type: "rich" },
                     { t: "深夜微光中獨處的沉靜感", type: "peace" },
+                    { t: "清晨陽光灑在工作桌上的幹練感", type: "rich"  },
                     { t: "午後在咖啡廳與好友暢談的放鬆感", type: "connection" },
                     { t: "看到新奇事物時產生的悸動感", type: "change" }
                 ]
@@ -222,28 +245,28 @@
             {
                 q: "面對 2026 年的未知，妳內心最強烈的渴望是？",
                 options: [
-                    { t: "希望努力都能開花結果，財富自由", type: "rich" },
+                     { t: "希望遇見契合的人，感情穩定", type: "connection" },
                     { t: "希望遠離紛擾，擁有智慧與理智", type: "peace" },
-                    { t: "希望遇見契合的人，感情穩定", type: "connection" },
+                    { t: "希望努力都能開花結果，財富自由", type: "rich" },
                     { t: "希望打破現狀，找回真實的自我", type: "change" }
                 ]
             },
             {
                 q: "妳平時挑選飾品時，最直覺被哪種質地吸引？",
                 options: [
-                    { t: "閃耀的金屬質感，代表力量", type: "rich" },
-                    { t: "沉穩的深色原石，代表穩定", type: "peace" },
-                    { t: "溫潤的粉嫩礦石，代表慈愛", type: "connection" },
-                    { t: "色彩繽紛的晶體，代表創意", type: "change" }
+                    { t: "閃耀的金屬質感", type: "rich" },
+                    { t: "色彩繽紛的晶體", type: "change" },
+                    { t: "溫潤的粉嫩礦石", type: "connection" },
+                    { t: "沉穩的深色原石", type: "peace" }
                 ]
             },
             {
                 q: "想像妳走進一間魔法屋，妳會選擇哪種能量球？",
                 options: [
-                    { t: "發出耀眼金光，主宰豐收的球體", type: "rich" },
+                    { t: "發出迷幻紫光，帶來變革的球體", type: "change" },
                     { t: "發出澄淨白光，沉澱思緒的球體", type: "peace" },
                     { t: "發出柔和紅光，牽引緣分的球體", type: "connection" },
-                    { t: "發出迷幻紫光，帶來變革的球體", type: "change" }
+                    { t: "發出耀眼金光，主宰豐收的球體", type: "rich" }
                 ]
             }
         ];
@@ -251,33 +274,33 @@
         const results = {
             rich: {
                 title: "豐盛卓越（事業/財運）",
-                desc: "在 2026 年，妳的氣場如同破曉之光。妳已經準備好在職場或理財上大展身手，現在需要的是一股推動目標實現的力量，讓妳在實踐理想的路上，正財與偏財皆能順勢而來。",
+                desc: "在 2026 年，妳的氣場如同破曉之光。妳已經準備好在職場上大展身手，現在需要的是一股推動目標實現的力量，讓正財與偏財皆能順勢而來。",
                 recommend: "正財滾滾來、偏財大翻身",
-                stones: "推薦水晶：金髮晶、鈦晶、綠幽靈。金髮晶與鈦晶為財富之石，能加強果斷力與氣場；綠幽靈則主正財，幫助事業運勢穩步攀升。",
+                stones: "金髮晶、鈦晶、綠幽靈",
                 gold: "「妳的專注就是最強大的吸引力，豐盛將隨著妳的信念不請自來。」",
                 url: "https://reurl.cc/Dl818m"
             },
             peace: {
                 title: "靜謐守護（智慧/平靜）",
-                desc: "生活或許有些喧囂，但在 2026 年，妳渴望的是一種「穩定且不被動搖」的狀態。當內心平靜如水，智慧便會自然顯現，幫助妳在紛亂中做出最正確的判斷。",
+                desc: "生活或許有些喧囂，但在 2026 年，妳渴望的是一種穩定且不被動搖的狀態。當內心平靜如水，智慧便會自然顯現。",
                 recommend: "內在微光款",
-                stones: "推薦水晶：黑曜石、黑金超、虎眼石。黑曜石具備強大防護性能量，能排解負面情緒；虎眼石則能帶來勇氣與洞察力，守護內在的微光。",
+                stones: "黑曜石、黑金超、虎眼石",
                 gold: "「在安靜中，妳會聽見最強而有力的解答。守住內在的平安，就是最大的贏面。」",
                 url: "https://reurl.cc/XAbjxa"
             },
             connection: {
                 title: "溫潤連結（人緣/感情）",
-                desc: "妳擁有一顆溫暖的心，而 2026 年將是妳關係開花結果的一年。無論是尋覓靈魂伴侶，還是修復與親友的關係，溫柔的能量將為妳吸引更多貴人與正向的緣分。",
+                desc: "妳擁有一顆溫暖的心，而 2026 年將是妳關係開花結果的一年。溫柔的能量將為妳吸引更多貴人與正向的緣分。",
                 recommend: "桃喜遇貴人",
-                stones: "推薦水晶：粉晶、草莓晶、薔薇輝石。粉晶主掌心輪，能柔化氣場、招來好緣分；草莓晶則能強化個人魅力，讓妳在人群中散發溫潤光采。",
+                stones: "粉晶、草莓晶、薔薇輝石",
                 gold: "「溫柔是有力量的。當妳開始愛自己，整個世界都會溫柔地回應妳。」",
                 url: "https://reurl.cc/1k8YW9"
             },
             change: {
                 title: "靈感變革（創意/自我）",
-                desc: "2026 年對妳而言，是突破框架的一年。妳不需要再活在他人的期待裡，現在是時候找回妳失落的靈感與好奇心，讓生命透過一場華麗的變革，找回最真實的自我色彩。",
+                desc: "2026 年對妳而言是突破框架的一年。現在是時候找回妳失落的靈感與好奇心，讓生命透過一場變革，找回真實自我。",
                 recommend: "金運假期",
-                stones: "推薦水晶：紫幽靈、金太陽石、金髮晶。金太陽石能激發行動力與陽光般的能量；紫幽靈則能啟發靈感，協助妳在創意與自我表達中找到平衡。",
+                stones: "紫幽靈、金太陽石、金髮晶",
                 gold: "「不必害怕改變，那是靈魂在呼喚妳進化的聲音。妳的光芒不應被框架束縛。」",
                 url: "https://reurl.cc/EbEryK"
             }
@@ -287,51 +310,80 @@
         let score = { rich: 0, peace: 0, connection: 0, change: 0 };
         let finalType = 'rich';
 
+        function switchSection(targetId) {
+            const current = document.querySelector('.view-section.active');
+            current.classList.remove('active');
+            const target = document.getElementById(targetId);
+            target.classList.add('active');
+        }
+
         function startQuiz() {
-            document.getElementById('intro').classList.add('hidden');
-            document.getElementById('quiz').classList.remove('hidden');
+            switchSection('quiz');
             renderQuestion();
         }
 
         function renderQuestion() {
+            const wrapper = document.getElementById('question-wrapper');
             const data = quizData[currentStep];
-            document.getElementById('question-text').innerText = data.q;
+            
+            // 更新進度條
             document.getElementById('progress-fill').style.width = ((currentStep + 1) / quizData.length * 100) + '%';
-            
-            const container = document.getElementById('options-container');
-            container.innerHTML = '';
-            
-            data.options.forEach((opt, idx) => {
-                const btn = document.createElement('div');
-                btn.className = 'option-card p-5 text-center text-xs tracking-wider reveal active';
-                btn.style.transitionDelay = (idx * 0.1) + 's';
-                btn.innerText = opt.t;
-                btn.onclick = () => selectOption(opt.type);
-                container.appendChild(btn);
-            });
+
+            // 建立題目 HTML
+            const html = `
+                <div class="question-content fade-enter">
+                    <h2 class="serif text-lg mb-8 text-center tracking-wide leading-relaxed">${data.q}</h2>
+                    <div class="space-y-4">
+                        ${data.options.map((opt, i) => `
+                            <div class="option-card p-5 text-center text-xs tracking-wider" 
+                                 onclick="selectOption('${opt.type}')">
+                                ${opt.t}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // 動態插入並啟動動畫
+            wrapper.innerHTML = html;
+            setTimeout(() => {
+                wrapper.querySelector('.question-content').classList.add('fade-enter-active');
+            }, 50);
         }
 
         function selectOption(type) {
             score[type]++;
-            if (currentStep < quizData.length - 1) {
-                currentStep++;
-                renderQuestion();
-            } else {
-                calculateResult();
-            }
+            const content = document.querySelector('.question-content');
+            content.classList.remove('fade-enter-active');
+            content.classList.add('fade-exit');
+
+            setTimeout(() => {
+                if (currentStep < quizData.length - 1) {
+                    currentStep++;
+                    renderQuestion();
+                } else {
+                    showResult();
+                }
+            }, 400);
         }
 
-        function calculateResult() {
+        function showResult() {
             finalType = Object.keys(score).reduce((a, b) => score[a] > score[b] ? a : b);
             const res = results[finalType];
             
-            document.getElementById('quiz').classList.add('hidden');
-            document.getElementById('result').classList.remove('hidden');
-            
+            // 準備結果內容
             document.getElementById('res-title').innerText = res.title;
             document.getElementById('res-desc').innerText = res.desc;
             document.getElementById('res-recommend').innerText = res.recommend;
             document.getElementById('res-link').href = res.url;
+
+            // 切換區塊
+            switchSection('result');
+
+            // 啟動由下而上的滑動動畫
+            setTimeout(() => {
+                document.getElementById('result-content').classList.add('slide-up-active');
+            }, 100);
         }
 
         function showModal(mode) {
@@ -339,11 +391,14 @@
             const modal = document.getElementById('modal');
             document.getElementById('modal-title').innerText = mode === 'stones' ? "推薦水晶組成" : "幸運金句";
             document.getElementById('modal-content').innerText = mode === 'stones' ? res.stones : res.gold;
-            modal.classList.add('active');
+            modal.style.display = 'flex';
+            setTimeout(() => modal.classList.add('active'), 10);
         }
 
         function closeModal() {
-            document.getElementById('modal').classList.remove('active');
+            const modal = document.getElementById('modal');
+            modal.classList.remove('active');
+            setTimeout(() => modal.style.display = 'none', 300);
         }
 
         function triggerCTA() {
@@ -355,17 +410,6 @@
         function hideConclusion() {
             document.getElementById('conclusion-layer').style.display = 'none';
         }
-
-        // 簡單的區塊滑入效果
-        window.addEventListener('scroll', () => {
-            const reveals = document.querySelectorAll('.reveal');
-            reveals.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight * 0.9) {
-                    el.classList.add('active');
-                }
-            });
-        });
     </script>
 </body>
 </html>
