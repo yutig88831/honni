@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>HoNni 開運飾品 | 專屬能量測驗</title>
+    
+    <!-- 社群分享預覽 -->
+    <meta property="og:title" content="HoNni 開運飾品 | 找出你的專屬能量飾品">
+    <meta property="og:description" content="透過直覺選擇，探索最適合你的能量指引，並獲得專業推薦。">
+    <meta name="theme-color" content="#8b0000">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Playfair+Display:ital,wght@1,600&display=swap');
+        
+        :root {
+            --brand-red: #8b0000;
+            --brand-gold: #ffd700;
+        }
+
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: var(--brand-red);
+            background-image: radial-gradient(#af0000 1px, transparent 1px);
+            background-size: 25px 25px;
+            color: #fff;
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* 品牌標題分兩行置中樣式 */
+        .brand-header {
+            text-align: center;
+            margin-bottom: 2rem;
+            line-height: 1.2;
+        }
+        .brand-line-1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            color: var(--brand-gold);
+            letter-spacing: 4px;
+            font-weight: 600;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+        .brand-line-2 {
+            font-size: 0.9rem;
+            color: var(--brand-gold);
+            letter-spacing: 6px;
+            opacity: 0.9;
+            margin-top: 4px;
+        }
+
+        /* 背景浮水印 */
+        .watermark {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-15deg);
+            text-align: center;
+            z-index: 0;
+            pointer-events: none;
+            user-select: none;
+            white-space: nowrap;
+            opacity: 0.05;
+        }
+        .wm-1 { font-family: 'Playfair Display', serif; font-size: 4rem; color: var(--brand-gold); font-weight: bold; }
+        .wm-2 { font-size: 1.8rem; color: var(--brand-gold); letter-spacing: 12px; }
+
+        .container-card {
+            background: rgba(255, 255, 255, 0.98);
+            color: #333;
+            border-radius: 30px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
+            border: 2px solid var(--brand-gold);
+            position: relative;
+            z-index: 10;
+            backdrop-filter: blur(10px);
+            width: 90%;
+            max-width: 400px;
+            overflow: hidden;
+        }
+
+        .option-btn {
+            transition: all 0.3s ease;
+            border: 1.5px solid #f3f4f6;
+            background: #fff;
+            width: 100%;
+            padding: 1rem 1.25rem;
+            border-radius: 16px;
+            text-align: left;
+            margin-bottom: 0.75rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            font-size: 0.95rem;
+        }
+        .option-btn:active { transform: scale(0.98); background: #fffcf0; }
+        .option-btn:hover { border-color: var(--brand-red); color: var(--brand-red); }
+
+        .result-image {
+            width: 110px;
+            height: 110px;
+            background: var(--brand-red);
+            border-radius: 50%;
+            margin: 0 auto 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            border: 3px solid var(--brand-gold);
+            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2);
+        }
+
+        .fade-in { animation: fadeIn 0.6s ease forwards; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+
+        #toast {
+            position: fixed;
+            bottom: 12%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.85);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 50px;
+            display: none;
+            z-index: 1000;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+        }
+
+        .line-button {
+            background-color: #06C755;
+            color: white;
+            transition: all 0.3s;
+        }
+        .line-button:hover { background-color: #05b34c; }
+    </style>
+</head>
+<body>
+
+    <div class="watermark">
+        <div class="wm-1">HoNni</div>
+        <div class="wm-2">開運飾品</div>
+    </div>
+
+    <div id="toast">連結已複製，分享給好友吧！</div>
+
+    <div class="flex flex-col items-center w-full py-12">
+        <!-- 品牌標題：分行置中 -->
+        <div class="brand-header">
+            <div class="brand-line-1">HoNni</div>
+            <div class="brand-line-2">開運飾品</div>
+        </div>
+
+        <div class="container-card">
+            <!-- 開始頁面 -->
+            <div id="start-view" class="p-8 text-center">
+                <div class="text-6xl mb-6">✨</div>
+                <h2 class="text-2xl font-bold text-red-800 mb-2 tracking-widest">能量心靈測驗</h2>
+                <p class="text-gray-500 text-sm mb-10 leading-relaxed px-2">
+                    聆聽內心的聲音，直覺回答 5 個問題<br>
+                    讓我們為您尋找最契合的開運石。
+                </p>
+                <button onclick="startQuiz()" class="w-full bg-red-800 text-white font-bold py-4 rounded-full shadow-lg tracking-[5px] active:scale-95 transition">
+                    立即測驗
+                </button>
+            </div>
+
+            <!-- 測驗內容 -->
+            <div id="quiz-view" class="p-6 hidden">
+                <div class="flex justify-between items-center mb-6">
+                    <span id="progress-text" class="text-[10px] font-bold text-red-800 bg-red-50 px-3 py-1 rounded-full uppercase tracking-tighter">QUESTION 1/5</span>
+                    <div class="w-2/3 h-1 bg-gray-100 rounded-full overflow-hidden">
+                        <div id="progress-bar" class="h-full bg-red-800 transition-all duration-300" style="width: 20%"></div>
+                    </div>
+                </div>
+                <h3 id="question-text" class="text-lg font-bold text-gray-800 mb-8 leading-relaxed">問題載入中...</h3>
+                <div id="options-container" class="space-y-1"></div>
+            </div>
+
+            <!-- 結果頁面 -->
+            <div id="result-view" class="hidden p-8 text-center fade-in">
+                <div id="res-emoji" class="result-image">💎</div>
+                <p class="text-red-800 font-bold tracking-widest text-[10px] mb-1">SOUL ENERGY</p>
+                <h2 id="res-title" class="text-2xl font-bold mb-4">結果載入中...</h2>
+                <p id="res-desc" class="text-gray-500 text-sm leading-relaxed mb-10 px-2"></p>
+                
+                <div class="space-y-4">
+                    <a href="https://lin.ee/V8kyc6C" target="_blank" class="line-button block w-full font-bold py-4 rounded-full shadow-lg text-base">
+                        推薦適合你的專屬開運飾品
+                    </a>
+                    <button onclick="copyShareLink()" class="block w-full bg-stone-100 text-stone-600 font-bold py-4 rounded-full text-sm">
+                        分享測驗給好友
+                    </button>
+                    <button onclick="location.reload()" class="text-stone-300 text-xs mt-4 underline underline-offset-4">重新測驗</button>
+                </div>
+            </div>
+        </div>
+        
+        <p class="mt-8 text-white/40 text-[9px] tracking-[4px] uppercase font-light">Natural Gemstones | HoNni Accessory</p>
+    </div>
+
+    <script>
+        const questions = [
+            {
+                q: "最近的你，最嚮往哪種心理狀態？",
+                options: [
+                    { t: "自信果敢，事業大放異彩", v: "success" },
+                    { t: "幸福洋溢，受人喜愛寵愛", v: "social" },
+                    { t: "思緒清晰，內心平靜如水", v: "peace" },
+                    { t: "穩定安心，遠離一切干擾", v: "protect" }
+                ]
+            },
+            {
+                q: "若在森林裡發現一個寶箱，你希望裡面是？",
+                options: [
+                    { t: "閃耀金光的古老金幣", v: "success" },
+                    { t: "散發香氣的粉色花冠", v: "social" },
+                    { t: "透出深沉光澤的古書", v: "peace" },
+                    { t: "沉甸甸且堅固的盾牌", v: "protect" }
+                ]
+            },
+            {
+                q: "你最常在哪個時刻感到疲勞？",
+                options: [
+                    { t: "目標卡關，感覺停滯不前時", v: "success" },
+                    { t: "人際溝通，感覺不被理解時", v: "social" },
+                    { t: "思緒混亂，無法專注決定時", v: "peace" },
+                    { t: "環境雜亂，感到莫名焦慮時", v: "protect" }
+                ]
+            },
+            {
+                q: "這週末，你最想如何犒賞自己？",
+                options: [
+                    { t: "大肆購物，犒賞努力的成果", v: "success" },
+                    { t: "與愛人或閨蜜來一場下午茶", v: "social" },
+                    { t: "獨自閱讀，享受冥想時光", v: "peace" },
+                    { t: "整理房間，打造舒適安全感", v: "protect" }
+                ]
+            },
+            {
+                q: "2025 年你給自己的關鍵字是？",
+                options: [
+                    { t: "財富豐盛", v: "success" },
+                    { t: "好人緣桃花", v: "social" },
+                    { t: "智慧升級", v: "peace" },
+                    { t: "穩定平安", v: "protect" }
+                ]
+            }
+        ];
+
+        const results = {
+            success: {
+                title: "事業財運系：金髮晶",
+                emoji: "💰",
+                desc: "你正處於能量的高峰期！你擁有卓越的執行力，目前最需要能強化招財與領袖氣場的寶石。讓 HoNni 為您挑選最強助推器。"
+            },
+            social: {
+                title: "人緣桃花系：草莓晶",
+                emoji: "🍓",
+                desc: "你擁有溫柔且吸引人的特質。草莓晶與粉晶能讓你的氣色與親和力倍增。讓 HoNni 為您打造專屬的幸福磁場。"
+            },
+            peace: {
+                title: "智慧平靜系：紫水晶",
+                emoji: "🔮",
+                desc: "你嚮往智慧的增長與內心的澄澈。紫水晶能穩定心神，提升直覺力。讓 HoNni 為您推薦能安撫繁雜思緒的指引能量。"
+            },
+            protect: {
+                title: "避邪守護系：黑曜石",
+                emoji: "🛡️",
+                desc: "建立強大的氣場屏障是你目前的關鍵。黑曜石能吸收負能量，帶給你踏實的安定感。讓 HoNni 為您挑選最忠誠的能量守衛。"
+            }
+        };
+
+        let currentIdx = 0;
+        let scores = { success: 0, social: 0, peace: 0, protect: 0 };
+
+        function startQuiz() {
+            document.getElementById('start-view').classList.add('hidden');
+            document.getElementById('quiz-view').classList.remove('hidden');
+            showQuestion();
+        }
+
+        function showQuestion() {
+            const q = questions[currentIdx];
+            document.getElementById('progress-text').innerText = `QUESTION ${currentIdx + 1}/${questions.length}`;
+            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
+            document.getElementById('question-text').innerText = q.q;
+
+            const container = document.getElementById('options-container');
+            container.innerHTML = '';
+            q.options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn fade-in';
+                btn.innerHTML = `<span>${opt.t}</span>`;
+                btn.onclick = () => selectOption(opt.v);
+                container.appendChild(btn);
+            });
+        }
+
+        function selectOption(val) {
+            scores[val]++;
+            currentIdx++;
+            if (currentIdx < questions.length) {
+                showQuestion();
+            } else {
+                showResult();
+            }
+        }
+
+        function showResult() {
+            document.getElementById('quiz-view').classList.add('hidden');
+            document.getElementById('result-view').classList.remove('hidden');
+
+            let maxKey = 'success';
+            let maxVal = -1;
+            for (let key in scores) {
+                if (scores[key] > maxVal) {
+                    maxVal = scores[key];
+                    maxKey = key;
+                }
+            }
+
+            const res = results[maxKey];
+            document.getElementById('res-emoji').innerText = res.emoji;
+            document.getElementById('res-title').innerText = res.title;
+            document.getElementById('res-desc').innerText = res.desc;
+        }
+
+        function copyShareLink() {
+            const dummy = document.createElement("textarea");
+            document.body.appendChild(dummy);
+            dummy.value = window.location.href;
+            dummy.select();
+            document.execCommand("copy");
+            document.body.removeChild(dummy);
+            
+            const toast = document.getElementById('toast');
+            toast.style.display = 'block';
+            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        }
+    </script>
+</body>
+</html>
+
