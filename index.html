@@ -1,352 +1,371 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="zh-Hant">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>HoNni 開運飾品 | 專屬能量測驗</title>
-    
-    <!-- 社群分享預覽 -->
-    <meta property="og:title" content="HoNni 開運飾品 | 找出你的專屬能量飾品">
-    <meta property="og:description" content="透過直覺選擇，探索最適合你的能量指引，並獲得專業推薦。">
-    <meta name="theme-color" content="#8b0000">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 HoNni 開運能量測驗</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;700&family=Playfair+Display:ital,wght@1,600&display=swap');
-        
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500&family=Noto+Sans+TC:wght@300;400;500&display=swap');
+
         :root {
-            --brand-red: #8b0000;
-            --brand-gold: #ffd700;
+            --honi-nude: #f7f2ed;    
+            --honi-sand: #e3d7cd;    
+            --honi-clay: #967e6d;    
+            --honi-brown: #5c4b40;   
+            --honi-white: #ffffff;   
         }
 
         body {
             font-family: 'Noto Sans TC', sans-serif;
-            background-color: var(--brand-red);
-            background-image: radial-gradient(#af0000 1px, transparent 1px);
-            background-size: 25px 25px;
-            color: #fff;
-            min-height: 100vh;
+            background-color: var(--honi-nude);
+            color: var(--honi-brown);
             margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            padding: 0;
             overflow-x: hidden;
-            position: relative;
+            scroll-behavior: smooth;
         }
 
-        /* 品牌標題分兩行置中樣式 */
-        .brand-header {
+        .serif { font-family: 'Noto Serif TC', serif; }
+
+        /* 品牌標識 */
+        .brand-logo {
             text-align: center;
-            margin-bottom: 2rem;
-            line-height: 1.2;
+            padding: 40px 0;
+            letter-spacing: 0.5em;
         }
-        .brand-line-1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.5rem;
-            color: var(--brand-gold);
-            letter-spacing: 4px;
-            font-weight: 600;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        .brand-logo .main { font-size: 18px; font-weight: 500; display: block; margin-bottom: 4px; }
+        .brand-logo .sub { font-size: 10px; font-weight: 300; display: block; color: var(--honi-clay); }
+
+        /* 動畫效果 */
+        .reveal {
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease-out;
         }
-        .brand-line-2 {
-            font-size: 0.9rem;
-            color: var(--brand-gold);
-            letter-spacing: 6px;
-            opacity: 0.9;
-            margin-top: 4px;
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* 背景浮水印 */
-        .watermark {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) rotate(-15deg);
-            text-align: center;
-            z-index: 0;
-            pointer-events: none;
-            user-select: none;
-            white-space: nowrap;
-            opacity: 0.05;
-        }
-        .wm-1 { font-family: 'Playfair Display', serif; font-size: 4rem; color: var(--brand-gold); font-weight: bold; }
-        .wm-2 { font-size: 1.8rem; color: var(--brand-gold); letter-spacing: 12px; }
-
-        .container-card {
-            background: rgba(255, 255, 255, 0.98);
-            color: #333;
-            border-radius: 30px;
-            box-shadow: 0 25px 50px rgba(0,0,0,0.4);
-            border: 2px solid var(--brand-gold);
-            position: relative;
-            z-index: 10;
-            backdrop-filter: blur(10px);
-            width: 90%;
-            max-width: 400px;
-            overflow: hidden;
-        }
-
-        .option-btn {
+        .option-card {
+            background: white;
+            border: 1px solid var(--honi-sand);
             transition: all 0.3s ease;
-            border: 1.5px solid #f3f4f6;
-            background: #fff;
-            width: 100%;
-            padding: 1rem 1.25rem;
-            border-radius: 16px;
-            text-align: left;
-            margin-bottom: 0.75rem;
-            font-weight: 500;
-            display: flex;
-            align-items: center;
-            font-size: 0.95rem;
+            cursor: pointer;
         }
-        .option-btn:active { transform: scale(0.98); background: #fffcf0; }
-        .option-btn:hover { border-color: var(--brand-red); color: var(--brand-red); }
+        .option-card:hover {
+            border-color: var(--honi-clay);
+            background: var(--honi-nude);
+        }
 
-        .result-image {
-            width: 110px;
-            height: 110px;
-            background: var(--brand-red);
-            border-radius: 50%;
-            margin: 0 auto 1.5rem;
+        .progress-bar {
+            height: 2px;
+            background: var(--honi-sand);
+            width: 100%;
+            position: relative;
+            margin-bottom: 40px;
+        }
+        .progress-fill {
+            height: 100%;
+            background: var(--honi-clay);
+            width: 20%;
+            transition: width 0.4s ease;
+        }
+
+        /* 彈窗樣式 */
+        .modal-overlay {
+            background: rgba(92, 75, 64, 0.4);
+            backdrop-filter: blur(4px);
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        .modal-overlay.active {
             display: flex;
+            opacity: 1;
+        }
+
+        /* 全螢幕結論 */
+        #conclusion-layer {
+            position: fixed;
+            inset: 0;
+            background: #4a3c33;
+            color: #f7f2ed;
+            z-index: 100;
+            display: none;
+            flex-direction: column;
             align-items: center;
             justify-content: center;
-            font-size: 3rem;
-            border: 3px solid var(--brand-gold);
-            box-shadow: 0 8px 20px rgba(139, 0, 0, 0.2);
+            text-align: center;
+            padding: 2rem;
         }
 
-        .fade-in { animation: fadeIn 0.6s ease forwards; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
-
-        #toast {
-            position: fixed;
-            bottom: 12%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.85);
+        .cta-btn {
+            background: var(--honi-clay);
             color: white;
-            padding: 12px 24px;
-            border-radius: 50px;
-            display: none;
-            z-index: 1000;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
+            letter-spacing: 0.2em;
+            transition: all 0.3s ease;
         }
-
-        .line-button {
-            background-color: #06C755;
-            color: white;
-            transition: all 0.3s;
+        .cta-btn:hover {
+            background: var(--honi-brown);
+            transform: scale(1.02);
         }
-        .line-button:hover { background-color: #05b34c; }
     </style>
 </head>
 <body>
 
-    <div class="watermark">
-        <div class="wm-1">HoNni</div>
-        <div class="wm-2">開運飾品</div>
+    <!-- 品牌 Header -->
+    <div class="brand-logo serif">
+        <span class="main">HoNni</span>
+        <span class="sub">開運飾品</span>
     </div>
 
-    <div id="toast">連結已複製，分享給好友吧！</div>
+    <main class="max-w-xl mx-auto px-6">
+        
+        <!-- 主題導入 -->
+        <section id="intro" class="reveal active py-12 text-center">
+            <h1 class="serif text-2xl tracking-[0.2em] leading-relaxed mb-6">
+                【2026年來測出<br>最適合你的開運能量】
+            </h1>
+            <p class="text-sm font-light text-stone-500 leading-loose mb-10">
+                時光的齒輪緩緩轉動，在步入新的一年之前，<br>
+                妳的靈魂正在渴求哪一種頻率的守護？<br>
+                靜下心，聽從直覺的指引。
+            </p>
+            <button onclick="startQuiz()" class="cta-btn px-12 py-4 text-xs">開啟能量探索</button>
+        </section>
 
-    <div class="flex flex-col items-center w-full py-12">
-        <!-- 品牌標題：分行置中 -->
-        <div class="brand-header">
-            <div class="brand-line-1">HoNni</div>
-            <div class="brand-line-2">開運飾品</div>
-        </div>
-
-        <div class="container-card">
-            <!-- 開始頁面 -->
-            <div id="start-view" class="p-8 text-center">
-                <div class="text-6xl mb-6">✨</div>
-                <h2 class="text-2xl font-bold text-red-800 mb-2 tracking-widest">能量心靈測驗</h2>
-                <p class="text-gray-500 text-sm mb-10 leading-relaxed px-2">
-                    聆聽內心的聲音，直覺回答 5 個問題<br>
-                    讓我們為您尋找最契合的開運石。
-                </p>
-                <button onclick="startQuiz()" class="w-full bg-red-800 text-white font-bold py-4 rounded-full shadow-lg tracking-[5px] active:scale-95 transition">
-                    立即測驗
-                </button>
+        <!-- 測驗內容 -->
+        <section id="quiz" class="hidden py-8">
+            <div class="progress-bar">
+                <div id="progress-fill" class="progress-fill"></div>
             </div>
+            <div id="question-container" class="reveal active">
+                <h2 id="question-text" class="serif text-lg mb-8 text-center tracking-wide"></h2>
+                <div id="options-container" class="space-y-4"></div>
+            </div>
+        </section>
 
-            <!-- 測驗內容 -->
-            <div id="quiz-view" class="p-6 hidden">
-                <div class="flex justify-between items-center mb-6">
-                    <span id="progress-text" class="text-[10px] font-bold text-red-800 bg-red-50 px-3 py-1 rounded-full uppercase tracking-tighter">QUESTION 1/5</span>
-                    <div class="w-2/3 h-1 bg-gray-100 rounded-full overflow-hidden">
-                        <div id="progress-bar" class="h-full bg-red-800 transition-all duration-300" style="width: 20%"></div>
+        <!-- 測驗結果 -->
+        <section id="result" class="hidden py-12">
+            <div class="reveal active">
+                <div class="text-center mb-10">
+                    <span class="text-[10px] tracking-[0.3em] text-stone-400">YOUR ENERGY TYPE</span>
+                    <h2 id="res-title" class="serif text-2xl mt-2 tracking-[0.1em]"></h2>
+                </div>
+
+                <div class="bg-white p-8 border border-stone-100 shadow-sm mb-8">
+                    <p id="res-desc" class="text-sm font-light leading-loose text-stone-600 mb-8"></p>
+                    
+                    <div class="space-y-4 border-t border-stone-50 pt-6">
+                        <div class="flex items-start gap-3 cursor-pointer group" onclick="showModal('stones')">
+                            <span class="text-stone-300 group-hover:text-stone-500">◆</span>
+                            <p class="text-xs tracking-wide text-stone-500 underline decoration-stone-200 underline-offset-4">查看此能量推薦的水晶類型</p>
+                        </div>
+                        <div class="flex items-start gap-3 cursor-pointer group" onclick="showModal('gold')">
+                            <span class="text-stone-300 group-hover:text-stone-500">◆</span>
+                            <p class="text-xs tracking-wide text-stone-500 underline decoration-stone-200 underline-offset-4">獲取您的 2026 年度幸運語錄</p>
+                        </div>
                     </div>
                 </div>
-                <h3 id="question-text" class="text-lg font-bold text-gray-800 mb-8 leading-relaxed">問題載入中...</h3>
-                <div id="options-container" class="space-y-1"></div>
-            </div>
 
-            <!-- 結果頁面 -->
-            <div id="result-view" class="hidden p-8 text-center fade-in">
-                <div id="res-emoji" class="result-image">💎</div>
-                <p class="text-red-800 font-bold tracking-widest text-[10px] mb-1">SOUL ENERGY</p>
-                <h2 id="res-title" class="text-2xl font-bold mb-4">結果載入中...</h2>
-                <p id="res-desc" class="text-gray-500 text-sm leading-relaxed mb-10 px-2"></p>
-                
-                <div class="space-y-4">
-                    <a href="https://lin.ee/V8kyc6C" target="_blank" class="line-button block w-full font-bold py-4 rounded-full shadow-lg text-base">
-                        推薦適合你的專屬開運飾品
-                    </a>
-                    <button onclick="copyShareLink()" class="block w-full bg-stone-100 text-stone-600 font-bold py-4 rounded-full text-sm">
-                        分享測驗給好友
+                <div class="text-center space-y-6">
+                    <p class="text-[11px] text-stone-400 tracking-widest">點擊下方按鈕，與我們分享妳的能量洞察</p>
+                    <button onclick="triggerCTA()" class="w-full cta-btn py-5 text-xs font-medium uppercase">
+                        將測驗結果傳給 HoNni
                     </button>
-                    <button onclick="location.reload()" class="text-stone-300 text-xs mt-4 underline underline-offset-4">重新測驗</button>
+                    <a id="res-link" href="#" target="_blank" class="block text-xs text-stone-400 hover:text-stone-600 tracking-widest transition-colors">
+                        [ 探索推薦款式：<span id="res-recommend"></span> ]
+                    </a>
                 </div>
             </div>
+        </section>
+    </main>
+
+    <!-- 彈窗 Modal -->
+    <div id="modal" class="modal-overlay fixed inset-0 z-50 items-center justify-center p-6">
+        <div class="bg-white w-full max-w-xs p-10 text-center shadow-xl">
+            <h3 id="modal-title" class="serif text-base mb-4 tracking-widest"></h3>
+            <p id="modal-content" class="text-xs font-light leading-relaxed text-stone-500 mb-8"></p>
+            <button onclick="closeModal()" class="text-[10px] tracking-[0.2em] text-stone-400 border-b border-stone-200 pb-1">CLOSE</button>
         </div>
-        
-        <p class="mt-8 text-white/40 text-[9px] tracking-[4px] uppercase font-light">Natural Gemstones | HoNni Accessory</p>
+    </div>
+
+    <!-- 全螢幕核心結論 -->
+    <div id="conclusion-layer">
+        <span class="serif text-[10px] tracking-[0.4em] opacity-50 mb-6 uppercase">Energy Insight</span>
+        <h2 id="final-insight" class="serif text-xl leading-relaxed tracking-widest mb-12">我來告訴你最需要的能量</h2>
+        <button onclick="hideConclusion()" class="text-[10px] tracking-[0.2em] border border-white/20 px-8 py-3 hover:bg-white hover:text-stone-800 transition-all">關閉</button>
     </div>
 
     <script>
-        const questions = [
+        const quizData = [
             {
-                q: "最近的你，最嚮往哪種心理狀態？",
+                q: "當妳展開新的一年，腦海中浮現的第一個畫面是？",
                 options: [
-                    { t: "自信果敢，事業大放異彩", v: "success" },
-                    { t: "幸福洋溢，受人喜愛寵愛", v: "social" },
-                    { t: "思緒清晰，內心平靜如水", v: "peace" },
-                    { t: "穩定安心，遠離一切干擾", v: "protect" }
+                    { t: "站在山頂俯瞰，收穫滿滿的成就感", type: "rich" },
+                    { t: "在靜謐森林，深呼吸感受平靜力量", type: "peace" },
+                    { t: "與摯愛圍坐，交換溫暖的笑容", type: "connection" },
+                    { t: "踏入異地，開啟未知的探險旅程", type: "change" }
                 ]
             },
             {
-                q: "若在森林裡發現一個寶箱，你希望裡面是？",
+                q: "以下哪一種氛圍，最能讓妳感到「充能」？",
                 options: [
-                    { t: "閃耀金光的古老金幣", v: "success" },
-                    { t: "散發香氣的粉色花冠", v: "social" },
-                    { t: "透出深沉光澤的古書", v: "peace" },
-                    { t: "沉甸甸且堅固的盾牌", v: "protect" }
+                    { t: "清晨陽光灑在工作桌上的幹練感", type: "rich" },
+                    { t: "深夜微光中獨處的沉靜感", type: "peace" },
+                    { t: "午後在咖啡廳與好友暢談的放鬆感", type: "connection" },
+                    { t: "看到新奇事物時產生的悸動感", type: "change" }
                 ]
             },
             {
-                q: "你最常在哪個時刻感到疲勞？",
+                q: "面對 2026 年的未知，妳內心最強烈的渴望是？",
                 options: [
-                    { t: "目標卡關，感覺停滯不前時", v: "success" },
-                    { t: "人際溝通，感覺不被理解時", v: "social" },
-                    { t: "思緒混亂，無法專注決定時", v: "peace" },
-                    { t: "環境雜亂，感到莫名焦慮時", v: "protect" }
+                    { t: "希望努力都能開花結果，財富自由", type: "rich" },
+                    { t: "希望遠離紛擾，擁有智慧與理智", type: "peace" },
+                    { t: "希望遇見契合的人，感情穩定", type: "connection" },
+                    { t: "希望打破現狀，找回真實的自我", type: "change" }
                 ]
             },
             {
-                q: "這週末，你最想如何犒賞自己？",
+                q: "妳平時挑選飾品時，最直覺被哪種質地吸引？",
                 options: [
-                    { t: "大肆購物，犒賞努力的成果", v: "success" },
-                    { t: "與愛人或閨蜜來一場下午茶", v: "social" },
-                    { t: "獨自閱讀，享受冥想時光", v: "peace" },
-                    { t: "整理房間，打造舒適安全感", v: "protect" }
+                    { t: "閃耀的金屬質感，代表力量", type: "rich" },
+                    { t: "沉穩的深色原石，代表穩定", type: "peace" },
+                    { t: "溫潤的粉嫩礦石，代表慈愛", type: "connection" },
+                    { t: "色彩繽紛的晶體，代表創意", type: "change" }
                 ]
             },
             {
-                q: "2025 年你給自己的關鍵字是？",
+                q: "想像妳走進一間魔法屋，妳會選擇哪種能量球？",
                 options: [
-                    { t: "財富豐盛", v: "success" },
-                    { t: "好人緣桃花", v: "social" },
-                    { t: "智慧升級", v: "peace" },
-                    { t: "穩定平安", v: "protect" }
+                    { t: "發出耀眼金光，主宰豐收的球體", type: "rich" },
+                    { t: "發出澄淨白光，沉澱思緒的球體", type: "peace" },
+                    { t: "發出柔和紅光，牽引緣分的球體", type: "connection" },
+                    { t: "發出迷幻紫光，帶來變革的球體", type: "change" }
                 ]
             }
         ];
 
         const results = {
-            success: {
-                title: "事業財運系：金髮晶",
-                emoji: "💰",
-                desc: "你正處於能量的高峰期！你擁有卓越的執行力，目前最需要能強化招財與領袖氣場的寶石。讓 HoNni 為您挑選最強助推器。"
-            },
-            social: {
-                title: "人緣桃花系：草莓晶",
-                emoji: "🍓",
-                desc: "你擁有溫柔且吸引人的特質。草莓晶與粉晶能讓你的氣色與親和力倍增。讓 HoNni 為您打造專屬的幸福磁場。"
+            rich: {
+                title: "豐盛卓越（事業/財運）",
+                desc: "在 2026 年，妳的氣場如同破曉之光。妳已經準備好在職場或理財上大展身手，現在需要的是一股推動目標實現的力量，讓妳在實踐理想的路上，正財與偏財皆能順勢而來。",
+                recommend: "正財滾滾來、偏財大翻身",
+                stones: "推薦水晶：金髮晶、鈦晶、綠幽靈。金髮晶與鈦晶為財富之石，能加強果斷力與氣場；綠幽靈則主正財，幫助事業運勢穩步攀升。",
+                gold: "「妳的專注就是最強大的吸引力，豐盛將隨著妳的信念不請自來。」",
+                url: "https://reurl.cc/Dl818m"
             },
             peace: {
-                title: "智慧平靜系：紫水晶",
-                emoji: "🔮",
-                desc: "你嚮往智慧的增長與內心的澄澈。紫水晶能穩定心神，提升直覺力。讓 HoNni 為您推薦能安撫繁雜思緒的指引能量。"
+                title: "靜謐守護（智慧/平靜）",
+                desc: "生活或許有些喧囂，但在 2026 年，妳渴望的是一種「穩定且不被動搖」的狀態。當內心平靜如水，智慧便會自然顯現，幫助妳在紛亂中做出最正確的判斷。",
+                recommend: "內在微光款",
+                stones: "推薦水晶：黑曜石、黑金超、虎眼石。黑曜石具備強大防護性能量，能排解負面情緒；虎眼石則能帶來勇氣與洞察力，守護內在的微光。",
+                gold: "「在安靜中，妳會聽見最強而有力的解答。守住內在的平安，就是最大的贏面。」",
+                url: "https://reurl.cc/XAbjxa"
             },
-            protect: {
-                title: "避邪守護系：黑曜石",
-                emoji: "🛡️",
-                desc: "建立強大的氣場屏障是你目前的關鍵。黑曜石能吸收負能量，帶給你踏實的安定感。讓 HoNni 為您挑選最忠誠的能量守衛。"
+            connection: {
+                title: "溫潤連結（人緣/感情）",
+                desc: "妳擁有一顆溫暖的心，而 2026 年將是妳關係開花結果的一年。無論是尋覓靈魂伴侶，還是修復與親友的關係，溫柔的能量將為妳吸引更多貴人與正向的緣分。",
+                recommend: "桃喜遇貴人",
+                stones: "推薦水晶：粉晶、草莓晶、薔薇輝石。粉晶主掌心輪，能柔化氣場、招來好緣分；草莓晶則能強化個人魅力，讓妳在人群中散發溫潤光采。",
+                gold: "「溫柔是有力量的。當妳開始愛自己，整個世界都會溫柔地回應妳。」",
+                url: "https://reurl.cc/1k8YW9"
+            },
+            change: {
+                title: "靈感變革（創意/自我）",
+                desc: "2026 年對妳而言，是突破框架的一年。妳不需要再活在他人的期待裡，現在是時候找回妳失落的靈感與好奇心，讓生命透過一場華麗的變革，找回最真實的自我色彩。",
+                recommend: "金運假期",
+                stones: "推薦水晶：紫幽靈、金太陽石、金髮晶。金太陽石能激發行動力與陽光般的能量；紫幽靈則能啟發靈感，協助妳在創意與自我表達中找到平衡。",
+                gold: "「不必害怕改變，那是靈魂在呼喚妳進化的聲音。妳的光芒不應被框架束縛。」",
+                url: "https://reurl.cc/EbEryK"
             }
         };
 
-        let currentIdx = 0;
-        let scores = { success: 0, social: 0, peace: 0, protect: 0 };
+        let currentStep = 0;
+        let score = { rich: 0, peace: 0, connection: 0, change: 0 };
+        let finalType = 'rich';
 
         function startQuiz() {
-            document.getElementById('start-view').classList.add('hidden');
-            document.getElementById('quiz-view').classList.remove('hidden');
-            showQuestion();
+            document.getElementById('intro').classList.add('hidden');
+            document.getElementById('quiz').classList.remove('hidden');
+            renderQuestion();
         }
 
-        function showQuestion() {
-            const q = questions[currentIdx];
-            document.getElementById('progress-text').innerText = `QUESTION ${currentIdx + 1}/${questions.length}`;
-            document.getElementById('progress-bar').style.width = `${((currentIdx + 1) / questions.length) * 100}%`;
-            document.getElementById('question-text').innerText = q.q;
-
+        function renderQuestion() {
+            const data = quizData[currentStep];
+            document.getElementById('question-text').innerText = data.q;
+            document.getElementById('progress-fill').style.width = ((currentStep + 1) / quizData.length * 100) + '%';
+            
             const container = document.getElementById('options-container');
             container.innerHTML = '';
-            q.options.forEach(opt => {
-                const btn = document.createElement('button');
-                btn.className = 'option-btn fade-in';
-                btn.innerHTML = `<span>${opt.t}</span>`;
-                btn.onclick = () => selectOption(opt.v);
+            
+            data.options.forEach((opt, idx) => {
+                const btn = document.createElement('div');
+                btn.className = 'option-card p-5 text-center text-xs tracking-wider reveal active';
+                btn.style.transitionDelay = (idx * 0.1) + 's';
+                btn.innerText = opt.t;
+                btn.onclick = () => selectOption(opt.type);
                 container.appendChild(btn);
             });
         }
 
-        function selectOption(val) {
-            scores[val]++;
-            currentIdx++;
-            if (currentIdx < questions.length) {
-                showQuestion();
+        function selectOption(type) {
+            score[type]++;
+            if (currentStep < quizData.length - 1) {
+                currentStep++;
+                renderQuestion();
             } else {
-                showResult();
+                calculateResult();
             }
         }
 
-        function showResult() {
-            document.getElementById('quiz-view').classList.add('hidden');
-            document.getElementById('result-view').classList.remove('hidden');
-
-            let maxKey = 'success';
-            let maxVal = -1;
-            for (let key in scores) {
-                if (scores[key] > maxVal) {
-                    maxVal = scores[key];
-                    maxKey = key;
-                }
-            }
-
-            const res = results[maxKey];
-            document.getElementById('res-emoji').innerText = res.emoji;
+        function calculateResult() {
+            finalType = Object.keys(score).reduce((a, b) => score[a] > score[b] ? a : b);
+            const res = results[finalType];
+            
+            document.getElementById('quiz').classList.add('hidden');
+            document.getElementById('result').classList.remove('hidden');
+            
             document.getElementById('res-title').innerText = res.title;
             document.getElementById('res-desc').innerText = res.desc;
+            document.getElementById('res-recommend').innerText = res.recommend;
+            document.getElementById('res-link').href = res.url;
         }
 
-        function copyShareLink() {
-            const dummy = document.createElement("textarea");
-            document.body.appendChild(dummy);
-            dummy.value = window.location.href;
-            dummy.select();
-            document.execCommand("copy");
-            document.body.removeChild(dummy);
-            
-            const toast = document.getElementById('toast');
-            toast.style.display = 'block';
-            setTimeout(() => { toast.style.display = 'none'; }, 2000);
+        function showModal(mode) {
+            const res = results[finalType];
+            const modal = document.getElementById('modal');
+            document.getElementById('modal-title').innerText = mode === 'stones' ? "推薦水晶組成" : "幸運金句";
+            document.getElementById('modal-content').innerText = mode === 'stones' ? res.stones : res.gold;
+            modal.classList.add('active');
         }
+
+        function closeModal() {
+            document.getElementById('modal').classList.remove('active');
+        }
+
+        function triggerCTA() {
+            const res = results[finalType];
+            document.getElementById('final-insight').innerHTML = `妳在 2026 最需要的能量是：<br><span style="color: #e3d7cd; display: block; margin-top: 15px;">【${res.title}】</span>`;
+            document.getElementById('conclusion-layer').style.display = 'flex';
+        }
+
+        function hideConclusion() {
+            document.getElementById('conclusion-layer').style.display = 'none';
+        }
+
+        // 簡單的區塊滑入效果
+        window.addEventListener('scroll', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(el => {
+                const rect = el.getBoundingClientRect();
+                if (rect.top < window.innerHeight * 0.9) {
+                    el.classList.add('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>
-
